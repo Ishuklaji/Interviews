@@ -5,6 +5,7 @@ import Contact from '../Pages/Contact'
 import Home from '../Pages/Home'
 import Login from '../Pages/Login'
 import Products from '../Pages/Products'
+import SingleProduct from '../Pages/SingleProduct'
 import NotFound from '../Pages/NotFound'
 import PrivateRoute from './PrivateRoute'
 
@@ -23,6 +24,11 @@ const AllRoutes = () => {
       <Route path='/products' element={
         <PrivateRoute>
           <Products />
+        </PrivateRoute>
+      }></Route>
+      <Route path='/products/:id' element={
+        <PrivateRoute>
+          <SingleProduct />
         </PrivateRoute>
       }></Route>
       <Route path='*' element={<NotFound />}></Route>

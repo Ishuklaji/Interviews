@@ -30,7 +30,9 @@ const Navbar = () => {
     return (
         <Flex  minWidth='max-content' alignItems='center' gap='2' bg="gray.900" p={2}>
             <Box p='2' color="white">
-                <Heading size='md'>WTF</Heading>
+                <Heading size='md'>
+                    <Link to={"/"} >WTF</Link>
+                    </Heading>
             </Box>
             <Spacer />
             <Box p='2' color="white">

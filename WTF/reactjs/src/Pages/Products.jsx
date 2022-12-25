@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Grid, GridItem, Skeleton, Stack, Alert,
   AlertIcon,
@@ -15,14 +16,25 @@ const Products = () => {
   const [products, setProducts] = useState([])
   const [error, setError] = useState(false)
 
-  useEffect(() => {
+  function getData(){
     setLoading(true)
-    fetch(`https://devapi.wtfup.me/gym/nearestgym?lat=30.325488815850512&long=78.0042384802231`)
+    fetch(`https://devapi.wtfup.me/gym/nearestgym?lat=30.325488815850512&long=78.0042384802231` )
       .then((res) => res.json())
-      .then((res) => setProducts(res.data))
+      .then((res) => {
+        setProducts(res.data)
+        localStorage.setItem("gymdetails",JSON.stringify(res.data))
+      })
       .catch(() => setError(true))
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    getData()
   }, [])
+
+  useEffect(()=>{
+     console.log(products)
+  },[products])
 
   if (loading) {
     <Stack>
@@ -51,6 +63,24 @@ const Products = () => {
     )
   }
   console.log(products)
+
+  function searchPlace(e){
+    let val = e.target.value
+    let pr = products.filter((el)=>{
+      return el.city == val
+      
+    })
+    if(pr.length==0){
+      getData()
+    }
+    else{
+      setProducts(pr)
+    }
+    
+  }
+
+  
+
   return (
     <Container maxW={{
       base: 'full',
@@ -76,21 +106,19 @@ const Products = () => {
           <Heading>Filter </Heading>
           <br />
           <Text>Location</Text>
-          <Input placeholder="Enter Location" />
+          <Input  onChange={(e)=>{searchPlace(e)}} placeholder="Enter Location" />
           <br />
           <br />
           <Text>Price</Text>
-          <Flex>
+          <Flex >
             <Input placeholder="min" />
             <Input placeholder="max" />
           </Flex>
           <br />
           <Text>Cities</Text>
-          <Select >
-            <option>New Delhi</option>
-            <option>Ghaziabad</option>
-            <option>Noida</option>
-            <option>Delhi</option>
+          <Select onChange={(e)=>{searchPlace(e)}} >
+            <option value="Noida">Noida</option>
+            <option value="Delhi">Delhi</option>
           </Select>
         </Box>
 
@@ -99,7 +127,7 @@ const Products = () => {
           // md: 'repeat(2, 1fr)',
           // xl: 'repeat(3, 1fr)'
         }} gap={6} w="75%" marginLeft="25%">
-          {products.map((product) => (
+          {products.map((product,ind) => (
             <GridItem w='100%'  >
               <Box bg="gray.900" boxShadow="xl" >
                 <Flex gap="20px">
@@ -116,8 +144,12 @@ const Products = () => {
                     <Text>Rating : {product.rating}</Text>
                     <Text>{product.address1} {product.address2} {product.city}</Text>
                   </VStack>
+                  
                 </Flex>
               </Box>
+              <Link to={`/products/${ind}`}>
+                <Text color="white">More Details</Text>
+              </Link>
             </GridItem>
           ))}
         </Grid>
